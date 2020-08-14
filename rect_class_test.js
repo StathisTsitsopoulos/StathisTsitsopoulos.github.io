@@ -1,0 +1,141 @@
+import {btnPop} from './helperFunctions.js';
+
+export default class Rectangle {
+
+
+    constructor(startingX,startingY,width, height) {
+        this.startingX = startingX;
+        this.startingY = startingY ;
+        this.width = width;
+        this.height = height; 
+        this.centerX = startingX + width/2;
+        this.centerY = startingY + height / 2;
+        this.leftCornerX = startingX;
+        this.leftCornerY = startingY;
+        this.rightCornerX = startingX + width;
+        this.rightCornerY = startingY;
+        this.botLeftCornerX = startingX;
+        this.botLeftCornerY = startingY + height;
+        this.botRightCornerX = startingX + width;
+        this.botRightCornerY = startingY + height;
+        this.angle = 0;
+        this.strokeStyle = 0;
+        this.lineWidth = 0;
+        this.text = "";
+        this.font = 0;
+        this.fillPermission = 0;
+        
+    }
+
+    set fillStyle(fillStyle) {
+        this.fillStyles = fillStyle;
+        this.fillPermission = 1;
+    }
+
+    set cornersAfterRotate(angles) {
+        this.leftCornerX = this.centerX - this.width/2 * Math.cos(angles) + this.height/2 * Math.sin(angles);
+        this.leftCornerY = this.centerY - this.width/2 * Math.sin(angles) - this.height/2 * Math.cos(angles);
+
+        this.rightCornerX = this.centerX + this.width/2 * Math.cos(angles) + this.height/2 * Math.sin(angles);
+        this.rightCornerY = this.centerY + this.width/2 * Math.sin(angles) - this.height/2 * Math.cos(angles);
+
+        this.botLeftCornerX = this.centerX - this.width/2 * Math.cos(angles) - this.height/2 * Math.sin(angles);
+        this.botLeftCornerY = this.centerY - this.width/2 * Math.sin(angles) + this.height/2 * Math.cos(angles);
+
+        this.botRightCornerX = this.centerX + this.width/2 * Math.cos(angles) - this.height/2 * Math.sin(angles);
+        this.botRightCornerY = this.centerY + this.width/2 * Math.sin(angles) + this.height/2 * Math.cos(angles);
+        this.angle = angles;
+    }
+
+    cornersAfterResize() {
+        this.rightCornerX = this.startingX + this.width;
+
+        this.botLeftCornerY = this.startingY + this.height;
+
+        this.botRightCornerX = this.startingX + this.width;
+        this.botRightCornerY = this.startingY + this.height;
+
+        this.centerX = this.startingX + this.width/2;
+        this.centerY = this.startingY + this.height/2;
+    }
+
+
+
+    checkRect (x,y) {
+        if (x>this.startingX && x<this.startingX + this.width && y > this.startingY && y< this.startingY + this.height) {
+            console.log("we gucci")
+            return true;
+        }
+    }
+    
+    //Test
+    popButton () {
+        btnPop($("#rotate-btn"),this.leftCornerX+100,this.leftCornerY);
+        btnPop($("#x-btn"),this.rightCornerX+100,this.rightCornerY);
+        btnPop($("#text-btn"),this.botLeftCornerX+100,this.botLeftCornerY);
+        btnPop($("#resize-btn"),this.botRightCornerX+100,this.botRightCornerY);
+    }
+
+    restore (ctx) {
+        
+        ctx.save();
+        
+            
+        ctx.translate(this.startingX,this.startingY);
+
+        ctx.translate(this.width/2,this.height/2);
+        
+        ctx.lineWidth = this.lineWidth;
+        ctx.strokeStyle = this.strokeStyle;
+        ctx.rotate(this.angle);
+        ctx.beginPath();
+        ctx.font = this.font
+        ctx.rect(-this.width/2, -this.height/2,this.width,this.height);
+        if(this.fillPermission) {ctx.fillStyle = this.fillStyles; ctx.fill(); }
+        
+       
+        ctx.stroke();
+        ctx.restore();
+
+
+        ctx.save();
+        ctx.translate(this.startingX,this.startingY);
+        ctx.translate(this.width/2,this.height/2);
+        ctx.rotate(this.angle);
+        ctx.font = this.font
+        ctx.fillText(this.text, 0, 0);
+        ctx.restore();
+
+        console.log("redraw");
+    }
+
+
+
+
+
+}
+
+//backup
+
+
+    // set leftCorner(angles) {
+    //     this.leftCornerX = this.centerX - this.width/2 * Math.cos(angles) + this.height/2 * Math.sin(angles);
+    //     this.leftCornerY = this.centerY - this.width/2 * Math.sin(angles) - this.height/2 * Math.cos(angles);
+    //     console.log("Center is "+this.centerX,this.centerY+"angles is "+angles*180/Math.PI+"cos of angles is"+Math.cos(angles))
+    //     console.log("Left corner is now ",this.leftCornerX,this.leftCornerY);
+    // }
+
+    // set rightCorner(angles) {
+    //     this.rightCornerX = this.centerX + this.width/2 * Math.cos(angles) + this.height/2 * Math.sin(angles);
+    //     this.rightCornerY = this.centerY + this.width/2 * Math.sin(angles) - this.height/2 * Math.cos(angles);
+    // }
+
+    // set botLeftCorner(angles) {
+    //     this.botLeftCornerX = this.centerX - this.width/2 * Math.cos(angles) - this.height/2 * Math.sin(angles);
+    //     this.botLeftCornerY = this.centerY - this.width/2 * Math.sin(angles) + this.height/2 * Math.cos(angles);
+    // }
+
+    // set botRightCorner(angles) {
+    //     this.botRightCornerX = this.centerX + this.width/2 * Math.cos(angles) - this.height/2 * Math.sin(angles);
+    //     this.botRightCornerY = this.centerY + this.width/2 * Math.sin(angles) + this.height/2 * Math.cos(angles);
+    // }
