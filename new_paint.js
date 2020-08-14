@@ -246,10 +246,6 @@ $("#color-pick").on("touchend",()=>{
 function start (e) {
     e.preventDefault();
 
-    if (this.selection == "select") {
-        $("#color-show").css("background-color","black");
-    }
-
     if (textSwitch != 1) {
 
   
@@ -283,7 +279,6 @@ function draw (e) {
 }
 
 function end (e) {
-    $("#color-show").css("background-color","purple");
     e.preventDefault();
     if(textSwitch != 1) {
         rotate_perimssion = 0;
