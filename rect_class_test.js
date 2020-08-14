@@ -23,7 +23,12 @@ export default class Rectangle {
         this.lineWidth = 0;
         this.text = "";
         this.font = 0;
-        this.fillStyle = "white";
+        this.fillPermission = 0;
+    }
+
+    set fillStyle(fillStyle) {
+        this.fillStyles = fillStyle;
+        this.fillPermission = 1;
     }
 
     set cornersAfterRotate(angles) {
@@ -85,9 +90,9 @@ export default class Rectangle {
         ctx.beginPath();
         ctx.font = this.font
         ctx.rect(-this.width/2, -this.height/2,this.width,this.height);
+        if(this.fillPermission) {ctx.fillStyle = this.fillStyles; ctx.fill(); }
         
-        ctx.fillStyle = this.fillStyle;
-        ctx.fill(); 
+       
         ctx.stroke();
         ctx.restore();
 

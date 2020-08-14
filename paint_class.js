@@ -1,6 +1,8 @@
 import {btnPop,radiansToAngles,closeButtons,lineDistance} from './helperFunctions.js';
 import Rectangle from './rect_class_test.js';
 import Line from './line_class.js'
+import Circle from './circle_class.js';
+import Triangle from './triangle_class.js';
 
 var angles = 0;
 
@@ -97,19 +99,24 @@ export default class Paint {
         this.restoreColor = 'rgb(255,0,0)';
         this.undoArray = [];
         this.redoArray = [];
-        this.shapeHeight = 0;
-        this.shapeWidth = 0;
         this.textPermission = 0;
         this.rectObjects = [];
-        this.redoRectObjects = [];
         this.lineObjects = [];
+        this.triangleObjects = [];
+        this.circleObjects = [];
+        
+        this.redoRectObjects = [];
         this.redoLineObjects = [];
+        this.redoTriangleObjects = [];
+        this.redoCircleObjects = [];
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     }
 
     start (e) {
+        console.log("STARTING WITH ",this.selection)
         this.permission = true;
-        closeButtons();
+        if (this.selection != "select") {closeButtons();}
+
 
 
         if (this.selection == "eraser") { this.restoreColor = this.ctx.strokeStyle;}
@@ -120,37 +127,32 @@ export default class Paint {
             if (this.undoArray.length < 10) {this.undoArray.push(this.startingImage);}
             else { this.undoArray.shift();   this.undoArray.push(this.startingImage);}
         }
-        this.startingX = e.touches[0].clientX-100;
-        this.startingY = e.touches[0].clientY;
-        //this.ctx.rect(0, 0,e.touches[0].clientX,e.touches[0].clientY);
+        this.startingX = e.clientX-100;
+        this.startingY = e.clientY;
     }
 
     drawShape (e) {
         if (this.permission == true) {
-
-            
-            
             switch(this.selection) {
                 
                 case "eraser":
 
                     this.ctx.strokeStyle = "white";
-                    this.ctx.lineTo(e.touches[0].clientX-100,e.touches[0].clientY);
+                    this.ctx.lineTo(e.clientX-100,e.clientY);
                     this.ctx.stroke();
                     this.ctx.beginPath();
-                    this.ctx.moveTo(e.touches[0].clientX-100,e.touches[0].clientY);
+                    this.ctx.moveTo(e.clientX-100,e.clientY);
                     break;
                 case "brush":
-                    this.ctx.lineTo(e.touches[0].clientX-100,e.touches[0].clientY);
+                    this.ctx.lineTo(e.clientX-100,e.clientY);
                     this.ctx.stroke();
                     this.ctx.beginPath();
-                    this.ctx.moveTo(e.touches[0].clientX-100,e.touches[0].clientY);
+                    this.ctx.moveTo(e.clientX-100,e.clientY);
                     break;
-                case "rectangle":
-
+                case "rectangle":                    
                     this.ctx.putImageData(this.startingImage,0,0);
                     this.ctx.beginPath();
-                    this.ctx.rect(this.startingX, this.startingY,e.touches[0].clientX - this.startingX,e.touches[0].clientY - this.startingY);
+                    this.ctx.rect(this.startingX, this.startingY,e.clientX - this.startingX,e.clientY - this.startingY);
                     this.ctx.stroke();
                     $('#textarea').val('') //Test code
                     break;
@@ -158,90 +160,216 @@ export default class Paint {
                     this.ctx.putImageData(this.startingImage,0,0);
                     this.ctx.beginPath();
                     this.ctx.moveTo(this.startingX,this.startingY);
-                    this.ctx.lineTo(e.touches[0].clientX-100, e.touches[0].clientY);
+                    this.ctx.lineTo(e.clientX-100, e.clientY);
                     this.ctx.stroke();
                     break;
                 case "circle":
                     this.ctx.putImageData(this.startingImage,0,0);
                     this.ctx.beginPath();
-                    this.ctx.arc(this.startingX,this.startingY,Math.sqrt(Math.pow(e.touches[0].clientX - this.startingX,2)+Math.pow(e.touches[0].clientY - this.startingY,2)),0,Math.PI*2,true);
+                    this.ctx.arc(this.startingX,this.startingY,Math.sqrt(Math.pow(e.clientX - this.startingX,2)+Math.pow(e.clientY - this.startingY,2)),0,Math.PI*2,true);
                     this.ctx.stroke();
                     break;
                 case "triangle":
                     this.ctx.putImageData(this.startingImage,0,0);
                     this.ctx.beginPath();
                     this.ctx.moveTo(this.startingX,this.startingY);
-                    this.ctx.lineTo(e.touches[0].clientX-100,this.startingY);
-                    this.ctx.lineTo(e.touches[0].clientX-100,e.touches[0].clientY);
+                    this.ctx.lineTo(e.clientX-100,this.startingY);
+                    this.ctx.lineTo(e.clientX-100,e.clientY);
                     this.ctx.closePath();
                     this.ctx.stroke();
                     break;
-                case "select":
-                    for (let item of this.rectObjects) {
-                       if (item.checkRect(e.touches[0].clientX-100,e.touches[0].clientY) == true) {
-                            item.popButton();
-                            this.selectedRect = item;
-                       }
-                    }
-                    break;
-                case "fill":
-                    for (let item of this.rectObjects) {
-                        if (item.checkRect(e.touches[0].clientX-100,e.touches[0].clientY) == true) {
-                             item.fillStyle = this.ctx.strokeStyle;
-                             item.restore(this.ctx);
-                        }
-                     }
+                // case "select":
+                //     for (let item of this.rectObjects) {
+                //        if (item.checkRect(e.clientX-100,e.clientY) == true) {
+                //             item.popButton();
+                //             this.selectedRect = item;
+                //        }
+                //     }
+                //     break;
+                // case "fill":
+                //     for (let item of this.rectObjects) {
+                //         if (item.checkRect(e.clientX-100,e.clientY) == true) {
+                //              item.fillStyle = this.ctx.strokeStyle;
+                //              item.restore(this.ctx);
+                //         }
+                //      }
             }
         }
     }
 
     end (e) {
         this.permission = false;
+        
         if (this.selection == "rectangle") {
-            // btnPop($("#x-btn"),e.touches[0].clientX,this.startingY);
-            // btnPop($("#text-btn"),this.startingX,e.touches[0].clientY);
-            
-            this.shapeHeight = Math.abs(this.startingY-e.changedTouches[0].pageY);
-            
-            this.shapeWidth = Math.abs(this.startingX-e.changedTouches[0].pageX);
-            
-            this.selectedRect = new Rectangle(this.startingX,this.startingY,this.shapeWidth,this.shapeHeight)
+            this.selectedRect = new Rectangle(this.startingX,this.startingY, Math.abs(this.startingX-e.clientX),Math.abs(this.startingY-e.clientY))
             this.selectedRect.lineWidth = this.ctx.lineWidth;
             this.selectedRect.strokeStyle = this.ctx.strokeStyle;
-            
             this.selectedRect.popButton();
-
             this.rectObjects.push(this.selectedRect);
         }
-        if (this.selection == "line") {
-            this.selectedLine = new Line(this.startingX,this.startingY,lineDistance({x: this.startingX+100,y: this.startingY},{x:e.touches[0].clientX,y:e.touches[0].clientY}),{x: e.touches[0].clientX-100,y: e.touches[0].clientY});
+        else if (this.selection == "line") {
+            this.selectedLine = new Line(this.startingX,this.startingY,lineDistance({x: this.startingX+100,y: this.startingY},{x:e.clientX,y:e.clientY}),{x: e.clientX-100,y: e.clientY});
             this.selectedLine.strokeStyle = this.ctx.strokeStyle;
             this.selectedLine.lineWidth = this.ctx.lineWidth;
+            this.selectedLine.popButton();
             this.lineObjects.push(this.selectedLine);
+            console.log("Ending Rect");
+            
+        }
+        else if (this.selection == "triangle") {
+            this.selectedTriangle = new Triangle({x: this.startingX,y: this.startingY},{x: e.clientX-100, y: this.startingY},{x: e.clientX-100,y:e.clientY});
+            this.selectedTriangle.lineWidth = this.ctx.lineWidth;
+            this.selectedTriangle.strokeStyle = this.ctx.strokeStyle;
+            this.selectedTriangle.popButton();
+            this.triangleObjects.push(this.selectedTriangle);
+            console.log("Ending triangle");
         }
 
-        if (this.selection == "resize") {
-            this.selectedRect.cornersAfterResize();
-            this.ctx.fillText(this.selectedRect.text, this.selectedRect.startingX+this.selectedRect.width/2,  this.selectedRect.startingY+this.selectedRect.height/2);
-            this.selectedRect.popButton();
-            this.selection = "rectangle";
-
+        else if (this.selection == "circle") {
+            this.selectedCircle = new Circle({x: this.startingX,y: this.startingY},Math.sqrt(Math.pow(e.clientX - this.startingX,2)+Math.pow(e.clientY - this.startingY,2)));
+            this.selectedCircle.strokeStyle = this.ctx.strokeStyle;
+            this.selectedCircle.lineWidth = this.ctx.lineWidth;
+            this.selectedCircle.popButton();
+            this.circleObjects.push(this.selectedCircle)
+            console.log("Ending circle")
         }
         
-        if (this.selection == "eraser") { this.ctx.strokeStyle = this.restoreColor;}
-        if (this.selection == "rotate") {//this.selectedRect.restore(this.ctx); 
+        else if (this.selection == "resize") {
+            if (this.rectObjects.length>0) {
+                this.selectedRect.cornersAfterResize();
+                this.ctx.fillText(this.selectedRect.text, this.selectedRect.startingX+this.selectedRect.width/2,  this.selectedRect.startingY+this.selectedRect.height/2);
+                this.selectedRect.popButton();
+                this.selection = "rectangle";
+            }
+            else if (this.lineObjects.length>0) {
+                this.selectedLine.popButton();
+                this.selection = "line";
+            }
+            else if (this.triangleObjects.length>0) {
+                this.selectedTriangle.popButton();
+                this.selection = "triangle";
+            }
+            else if (this.circleObjects.length>0) {
+                this.selectedCircle.popButton();
+                this.selection = "circle";
+            }
+        }
+        
+        else if (this.selection == "eraser") { this.ctx.strokeStyle = this.restoreColor;}
+        else if (this.selection == "rotate") {//this.selectedRect.restore(this.ctx); 
             this.selectedRect.popButton();this.selection = "rectangle";this.selectedRect.restore(this.ctx);}
-
+      
 
         this.ctx.beginPath()
         
     }
 
-   
+    
+
+    checkSelect(e,layer) {
+        if (layer == 1) {
+            for (let item of this.rectObjects) {
+                if (item.checkRect(e.clientX-100,e.clientY) == true) {
+                    this.selectedRect = item;
+                    return {number:1,shape:item};
+                }
+            }
+        }
+        else if (layer == 2) {
+            
+            for (let item of this.lineObjects) {
+                if (item.checkLine({x: e.clientX-100,y: e.clientY}) < 5) {
+                    this.selectedLine = item;
+                    
+                    return {number:2,shape:item};
+                }
+            }
+        }
+        else if (layer ==3 ) {
+        
+            for (let item of this.triangleObjects) {
+                if (item.checkTriangle({x: e.clientX-100,y: e.clientY})) {
+                    this.selectedTriangle = item;
+                    
+                    return {number:3,shape:item};
+                }
+            }
+            
+        }
+        else if (layer == 4) {
+            for (let item of this.circleObjects) {
+                if (item.checkCircle({x: e.clientX-100,y: e.clientY})) {
+                    this.selectedCircle = item;
+                    
+                    return {number:4,shape:item};
+                    //this.selectedRect = item;
+                }
+            }
+
+
+        }
+        
+        return 0;
+         
+    }
+
+    fillObject(layer) {
+        if (layer == 1)  {
+            this.selectedRect.fillStyle = this.ctx.strokeStyle;
+            this.selectedRect.restore(this.ctx);
+                
+        }
+
+        else if (layer ==3) {
+            this.selectedTriangle.fillStyle = this.ctx.strokeStyle;
+            this.selectedTriangle.restore(this.ctx)
+            
+        }
+        else if (layer ==4) {
+            this.selectedCircle.fillStyle = this.ctx.strokeStyle;
+            this.selectedCircle.restore(this.ctx)
+        }
+
+    }
+
+
+    
     undo (layer) {  
+        console.log("Undoing layer ",layer);
+        //Undo for layer 4
+        if (layer == 4 ) {
+            if (this.circleObjects.length>0) {
+                console.log(this.circleObjects.length);
+                this.redoCircleObjects.push(this.circleObjects[this.circleObjects.length-1]);
+                this.circleObjects.pop();
+
+                this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+                for (let item of this.circleObjects) {
+                    item.restore(this.ctx);
+                }
+            }
+            else {
+                return 0;
+            }
+        }
+        //Undo for layer 3
+        else if (layer == 3) {
+            if (this.triangleObjects.length>0) {
+                this.redoTriangleObjects.push(this.triangleObjects[this.triangleObjects.length-1]);
+                this.triangleObjects.pop();
+
+                this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+                for (let item of this.triangleObjects) {
+                    item.restore(this.ctx);
+                }
+            }
+            else {
+                return 0;
+            }
+        }
         //Undo for layer 2
-        console.log("Undoing");
-        if (layer == 2) {
+       
+        else if (layer == 2) {
             if (this.lineObjects.length>0) {
                 this.redoLineObjects.push(this.lineObjects[this.lineObjects.length-1]);
                 this.lineObjects.pop();
@@ -256,7 +384,7 @@ export default class Paint {
                 return 0;
             }
         }
-        //Undo for layer 0
+        //Undo for layer 1
         else if (layer == 1) { 
             if (this.rectObjects.length>0) {
                 this.redoRectObjects.push(this.rectObjects[this.rectObjects.length-1]);
@@ -290,7 +418,35 @@ export default class Paint {
     }
 
     redo (layer) {
-        if (layer == 2) {
+        if (layer == 4) {
+            if(this.redoCircleObjects.length>0) {
+                this.circleObjects.push(this.redoCircleObjects[this.redoCircleObjects.length-1]);
+                this.redoCircleObjects.pop();
+                
+                this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+                for (let item of this.circleObjects) {
+                    item.restore(this.ctx);
+                }
+            }
+            else {
+                return 0;
+            }
+        }
+        else if (layer == 3) {
+            if(this.redoTriangleObjects.length>0) {
+                this.triangleObjects.push(this.redoTriangleObjects[this.redoTriangleObjects.length-1]);
+                this.redoTriangleObjects.pop();
+                
+                this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+                for (let item of this.triangleObjects) {
+                    item.restore(this.ctx);
+                }
+            }
+            else {
+                return 0;
+            }
+        }
+        else if (layer == 2) {
             if(this.redoLineObjects.length>0) {
                 this.lineObjects.push(this.redoLineObjects[this.redoLineObjects.length-1]);
                 this.redoLineObjects.pop();
@@ -339,7 +495,6 @@ export default class Paint {
     
     closeShape () {
         console.log("Closing Shape");
-        console.log(this.rectObjects.length+"REctobjects length")
         closeButtons();
         let temp 
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
@@ -367,7 +522,6 @@ export default class Paint {
     }
 
     rotate (e) {
-        
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         
         for (let item of this.rectObjects) {
@@ -381,7 +535,7 @@ export default class Paint {
         this.ctx.save();
             this.ctx.translate(this.selectedRect.startingX,this.selectedRect.startingY);
             this.ctx.translate(this.selectedRect.width/2,this.selectedRect.height/2);
-            angles = radiansToAngles(e.touches[0].clientY-this.selectedRect.centerY,e.touches[0].clientX-this.selectedRect.centerX);
+            angles = radiansToAngles(e.clientY-this.selectedRect.centerY,e.clientX-this.selectedRect.centerX);
             this.ctx.rotate(angles);
             this.ctx.beginPath();
             this.ctx.rect(-this.selectedRect.width/2, -this.selectedRect.height/2,this.selectedRect.width,this.selectedRect.height);
@@ -393,20 +547,80 @@ export default class Paint {
 
 
 
-    resize (e) {
+    resize (e,layer) {
         console.log("resizing")
-        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-        
-        this.selectedRect.height =  Math.abs(this.selectedRect.startingY-e.touches[0].clientY);
-        this.selectedRect.width = Math.abs(this.selectedRect.startingX-e.touches[0].clientX);
-        for (let item of this.rectObjects) {
-            if (item != this.selectedRect) {
-                item.restore(this.ctx);
+        if (layer == 1) {
+            
+            this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+            
+            this.selectedRect.height =  Math.abs(this.selectedRect.startingY-e.clientY);
+            this.selectedRect.width = Math.abs(this.selectedRect.startingX-e.clientX);
+            for (let item of this.rectObjects) {
+                if (item != this.selectedRect) {
+                    item.restore(this.ctx);
+                }
             }
+            this.ctx.beginPath();
+            this.ctx.rect(this.selectedRect.startingX, this.selectedRect.startingY,e.clientX - this.selectedRect.startingX,e.clientY - this.selectedRect.startingY);
+            if (this.selectedRect.fillPermission) {this.ctx.save(); this.ctx.fillStyle = this.selectedRect.fillStyles; this.ctx.fill();this.ctx.restore();}
+            this.ctx.stroke();
+            
         }
-        this.ctx.beginPath();
-        this.ctx.rect(this.selectedRect.startingX, this.selectedRect.startingY,e.touches[0].clientX - this.selectedRect.startingX,e.touches[0].clientY - this.selectedRect.startingY);
-        this.ctx.stroke();
+        else if (layer == 2) {
+            
+            this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+            for (let item of this.lineObjects) {
+                if (item != this.selectedLine) {
+                    item.restore(this.ctx);
+                }
+            }
+
+            this.ctx.beginPath();
+            this.ctx.moveTo(this.selectedLine.startingX,this.selectedLine.startingY);
+            this.ctx.lineTo(e.clientX-100, e.clientY);
+            this.ctx.stroke();
+            
+            this.selectedLine.endPoint.x = e.clientX-100;
+            this.selectedLine.endPoint.y = e.clientY;
+        }
+        else if (layer == 3) {
+            this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+            for (let item of this.triangleObjects) {
+                if (item != this.selectedTriangle) {
+                    item.restore(this.ctx);
+                }
+                
+            }
+            this.ctx.beginPath();
+            this.ctx.moveTo(this.selectedTriangle.point1.x,this.selectedTriangle.point1.y);
+            this.ctx.lineTo(e.clientX-100,this.selectedTriangle.point1.y);
+            this.ctx.lineTo(e.clientX-100,e.clientY);
+            this.ctx.closePath();
+            if (this.selectedTriangle.fillPermission) {this.ctx.save(); this.ctx.fillStyle = this.selectedTriangle.fillStyles; this.ctx.fill();this.ctx.restore();}
+            this.ctx.stroke();
+            this.selectedTriangle.point2.x = e.clientX-100;
+            this.selectedTriangle.point3 = {x:e.clientX-100,y: e.clientY};
+
+        }
+        else if (layer == 4) {
+            this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+            for (let item of this.circleObjects) {
+                if (item != this.selectedCircle) {
+                    item.restore(this.ctx);
+                }
+            }
+
+            this.ctx.beginPath();
+            this.selectedCircle.radius = Math.sqrt(Math.pow(e.clientX - this.selectedCircle.startingPoint.x,2)+Math.pow(e.clientY - this.selectedCircle.startingPoint.y,2));
+            this.ctx.arc(this.selectedCircle.startingPoint.x,this.selectedCircle.startingPoint.y,this.selectedCircle.radius,0,Math.PI*2,true);
+            if (this.selectedCircle.fillPermission) {this.ctx.save(); this.ctx.fillStyle = this.selectedCircle.fillStyles; this.ctx.fill();this.ctx.restore();}
+            this.ctx.stroke();
+
+
+        }
         
     }
 
@@ -440,6 +654,22 @@ export default class Paint {
 
     getLines() {
         return this.lineObjects;
+    }
+
+    getTriangles () {
+        return this.triangleObjects;
+    }
+
+    getCircles() {
+        return this.circleObjects;
+    }
+
+    restoreTriangles (triangleObjects) {
+        this.triangleObjects = triangleObjects;
+    }
+
+    restoreCircles (circleObjects) {
+        this.circleObjects = circleObjects;
     }
 
     restoreRects (rectObjects) {

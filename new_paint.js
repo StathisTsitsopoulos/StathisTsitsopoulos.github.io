@@ -1,17 +1,21 @@
 import Paint from './paint_class.js';
-import { closeButtons, addPaint,paintArrayInit } from './helperFunctions.js';
+import { closeButtons,checkDistance } from './helperFunctions.js';
 import Project from './project_class.js'
 
 var paint = new Paint("canvas");
 var layer2 = new Paint("canvas2");
 var layer3 = new Paint("canvas3");
+var layer4 = new Paint("canvas4");
+var layer5 = new Paint("canvas5");
+
+
 var projectOptions = document.getElementById("projects");
 
 
 //testctx =  JSON.parse(JSON.stringify(layer2.getRects()))
 
 
-var layers = [paint,layer2,layer3];
+var layers = [paint,layer2,layer3,layer4,layer5];
 var layersIndex = 0;
 
 var projectsCounter = 1;
@@ -25,26 +29,14 @@ var textSwitch = 0;
 var switcher = 1;
 var rotate_perimssion = 0;
 var resize_perimssion = 0;
-var firstTime = 1;
-
 
 for (let item of layers) {
     item.init();
 }
 
-// paint.canvas.addEventListener('mousedown',start);
-// paint.canvas.addEventListener('mousemove',draw);
-// paint.canvas.addEventListener('mouseup',end);   
-
-//MOBILE TESTING
-canvas.addEventListener('touchstart',start);
-canvas.addEventListener('touchmove',draw);
-canvas.addEventListener('touchend', end);
-
-
-
-
-
+paint.canvas.addEventListener('mousedown',start);
+paint.canvas.addEventListener('mousemove',draw);
+paint.canvas.addEventListener('mouseup',end);   
 
 
 document.querySelectorAll("[data-tool").forEach(                           //Tool event listener
@@ -52,17 +44,23 @@ document.querySelectorAll("[data-tool").forEach(                           //Too
         item.addEventListener("click",function (e) {
             closeButtons();
             selection =  item.getAttribute("data-tool");
-
-            if (selection == "line") {
+            if (selection == "circle") {
+                layersIndex = 4;
+            }
+            else if (selection == "triangle") {
+                layersIndex = 3;
+            }
+            else if (selection == "line") {
                 layersIndex = 2;
             }
-            else if (selection == "rectangle" || selection == "select" || selection == "fill") {
+            else if (selection == "rectangle"  || selection == "fill") {
                 layersIndex = 1;
             }
             else {
                 layersIndex = 0;
             }
-            layers[layersIndex].activeSelection = selection;
+            
+           layers[layersIndex].activeSelection = selection;
         });
     }
 )
@@ -77,17 +75,23 @@ document.querySelectorAll("[data-btn").forEach(                           //Btn 
                     switcher = (switcher+1)%2;
                     break;
                 case "undo":
-                    let i = undoCanvasId[undoCanvasId.length-1]; // Index of layer to procced for the undo op
-                    if (layers[i].undo(i) != 0 ) {
-                        redoCanvasId.push(i)
-                        undoCanvasId.pop();
+                    if (undoCanvasId.length == 0) {console.log("nothing to undo")}
+                    else {
+                        let i = undoCanvasId[undoCanvasId.length-1]; // Index of layer to procced for the undo op
+                        if (layers[i].undo(i) != 0 ) {
+                            redoCanvasId.push(i)
+                            undoCanvasId.pop();
+                        }
                     }
                     break;
                 case "redo":
-                    let j = redoCanvasId[redoCanvasId.length-1]
-                    if (layers[j].redo(j) != 0 ) {
-                        undoCanvasId.push(j)
-                        redoCanvasId.pop();
+                    if (redoCanvasId.length == 0 ) {console.log("nothing to redo")}
+                    else {
+                        let j = redoCanvasId[redoCanvasId.length-1]
+                        if (layers[j].redo(j) != 0 ) {
+                            undoCanvasId.push(j)
+                            redoCanvasId.pop();
+                        }
                     }
                     break;
                 case "x-btn":
@@ -98,7 +102,7 @@ document.querySelectorAll("[data-btn").forEach(                           //Btn 
                     textSwitch = 1;
                     break;
                 case "add":
-                    projects.push(new Project(paint.getImage(),layer2.getRects(),layer3.getLines()));
+                    projects.push(new Project(paint.getImage(),layer2.getRects(),layer3.getLines(),layer4.getTriangles(),layer5.getCircles()));
                     redoCanvasId.length = 0;
                     undoCanvasId.length = 0;
                     projectsCounter += 1;
@@ -140,7 +144,7 @@ document.querySelectorAll("[data-text").forEach(                           //Tex
 $("#projects").on("change",function () {    //Change project
     console.log(projectIndex);
     console.log(projects);
-    projects[projectIndex] = new Project(paint.getImage(),layer2.getRects(),layer3.getLines());
+    projects[projectIndex] = new Project(paint.getImage(),layer2.getRects(),layer3.getLines(),layer4.getTriangles(),layer5.getCircles());
 
     projectIndex = $("#projects").val() - 1;
     
@@ -157,24 +161,30 @@ $("#projects").on("change",function () {    //Change project
     for (let item of projects[projectIndex].lines) {
         item.restore(layer3.ctx)
     }
+    for (let item of projects[projectIndex].triangles) {
+        item.restore(layer4.ctx)
+    }
+    for (let item of projects[projectIndex].circles) {
+        item.restore(layer5.ctx)
+    }
     paint.restoreImage(projects[projectIndex].image);
     layer2.restoreRects(projects[projectIndex].rects);
     layer3.restoreLines(projects[projectIndex].lines);
+    layer4.restoreTriangles(projects[projectIndex].triangles);
+    layer5.restoreCircles(projects[projectIndex].circles);
+    // console.log(layer2.getRects().length)
+    
+
+    // let image = addPaint(paint,$("#projects").val());
+    // paint.ctx.putImageData(image,0,0);
 })
 //======================CHANGING PROJECT====================
 
 //==========================ROTATE AND RESIZE=========================
-$("#rotate-btn").on('touchstart',(e)=>{      //Rotate
+$("#rotate-btn").on("mousedown",(e)=>{      //Rotate
     rotate_perimssion = 1;
     layers[layersIndex].activeSelection = "rotate";
     closeButtons();
-  
-});
-$("#rotate-btn").on('touchmove',(e)=>{      //Rotate
-    rotate_perimssion = 1;
-    layers[layersIndex].activeSelection = "rotate";
-    closeButtons();
-    draw();
   
 });
 
@@ -194,6 +204,14 @@ $("#resize-btn").on("mouseup",(e)=>{
 });
 //=============================ROTATE AND RESIZE END==================
 
+$("#projectName").on("click",()=> {
+    let txt =  prompt("Please enter your project name: ");
+    console.log(txt);
+    if (txt != null && txt != "") {
+        if (projectIndex==-1) {projectOptions.options[0].text = txt;}
+        else {projectOptions.options[projectIndex].text = txt;}
+    }
+});
 
 
 $("#color-pick").on("input",()=>{                                           //Color event listener
@@ -208,7 +226,7 @@ $("#color-pick").on("input",()=>{                                           //Co
         }
     }
 });
-$("#color-pick").on("touchend",()=>{
+$("#color-pick").on("mouseup",()=>{
     document.getElementById('slider-show').style.visibility = 'hidden';
 });
 
@@ -216,34 +234,42 @@ $("#color-pick").on("touchend",()=>{
 
 
 function start (e) {
-    
-    e.preventDefault()
+
+
+
+
+
     if (textSwitch != 1) {
 
-        if (selection != "select") {
-            undoCanvasId.push(layersIndex);
+  
+        if (selection == "select" || selection == "fill") {
+            closeButtons();
+            layersIndex = checkDistance(e,layers)
+            layers[layersIndex].activeSelection = "select"
+            if (selection == "fill") {
+                layers[layersIndex].fillObject(layersIndex);
+                layers[layersIndex].activeSelection = "fill";
+            }
         }
-        
-        
-        layers[layersIndex].start(e);
-        draw(e);
+        else {
+            undoCanvasId.push(layersIndex);
+            console.log(undoCanvasId) 
+            layers[layersIndex].start(e);
+            draw(e);
+        }
     }
 }
 
 function draw (e) {
-    
-    e.preventDefault()
+
     if (rotate_perimssion == 1) {layers[layersIndex].rotate(e);}
-    else if (resize_perimssion == 1) {layers[layersIndex].resize(e);}
+    else if (resize_perimssion == 1) {layers[layersIndex].resize(e,layersIndex);}
     else {layers[layersIndex].drawShape(e);}
 
 }
 
 function end (e) {
-    
-    e.preventDefault()
     if(textSwitch != 1) {
-        
         rotate_perimssion = 0;
         resize_perimssion = 0;
         layers[layersIndex].end(e);
@@ -254,3 +280,4 @@ function end (e) {
     }
    
 }
+//CHANGE PROJECT 1
