@@ -190,7 +190,7 @@ export default class Paint {
         
         if (this.selection == "rectangle") {
 			if (e.changedTouches[0].clientX < this.startingX && e.changedTouches[0].clientY < this.startingY) {
-                this.selectedRect = new Rectangle(e.changedTouches[0].clientX,e.changedTouches[0].clientY, Math.abs(this.startingX-e.clientX),Math.abs(this.startingY-e.changedTouches[0].clientY));
+                this.selectedRect = new Rectangle(e.changedTouches[0].clientX,e.changedTouches[0].clientY, Math.abs(this.startingX-e.changedTouches[0].clientX),Math.abs(this.startingY-e.changedTouches[0].clientY));
             }
             else if (e.changedTouches[0].clientX > this.startingX && e.changedTouches[0].clientY < this.startingY) {
                 this.selectedRect = new Rectangle(this.startingX,e.changedTouches[0].clientY, Math.abs(this.startingX-e.changedTouches[0].clientX),Math.abs(this.startingY-e.changedTouches[0].clientY));
