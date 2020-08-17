@@ -189,7 +189,16 @@ export default class Paint {
         this.permission = false;
         
         if (this.selection == "rectangle") {
-            this.selectedRect = new Rectangle(this.startingX,this.startingY, Math.abs(this.startingX-e.changedTouches[0].clientX),Math.abs(this.startingY-e.changedTouches[0].clientY))
+			if (e.clientX < this.startingX && e.clientY < this.startingY) {
+                this.selectedRect = new Rectangle(e.changedTouches[0].clientX,e.changedTouches[0].clientY, Math.abs(this.startingX-e.clientX),Math.abs(this.startingY-e.changedTouches[0].clientY));
+            }
+            else if (e.changedTouches[0].clientX > this.startingX && e.changedTouches[0].clientY < this.startingY) {
+                this.selectedRect = new Rectangle(this.startingX,e.changedTouches[0].clientY, Math.abs(this.startingX-e.changedTouches[0].clientX),Math.abs(this.startingY-e.changedTouches[0].clientY));
+            }
+            else if (e.changedTouches[0].clientX<this.startingX) {
+                this.selectedRect = new Rectangle(e.changedTouches[0].clientX,this.startingY, Math.abs(this.startingX-e.changedTouches[0].clientX),Math.abs(this.startingY-e.changedTouches[0].clientY));
+            }
+            else {this.selectedRect = new Rectangle(this.startingX,this.startingY, Math.abs(this.startingX-e.changedTouches[0].clientX),Math.abs(this.startingY-e.changedTouches[0].clientY))}
             
             this.selectedRect.lineWidth = this.ctx.lineWidth;
             this.selectedRect.strokeStyle = this.ctx.strokeStyle;
@@ -531,6 +540,7 @@ export default class Paint {
             angles = radiansToAngles(e.touches[0].clientY-this.selectedRect.centerY,e.touches[0].clientX-this.selectedRect.centerX);
             this.ctx.rotate(angles);
             this.ctx.beginPath();
+			this.ctx.strokeStyle = this.selectedRect.strokeStyle;
             this.ctx.rect(-this.selectedRect.width/2, -this.selectedRect.height/2,this.selectedRect.width,this.selectedRect.height);
             this.ctx.stroke();
             this.ctx.fillText(this.selectedRect.text, 0, 0);

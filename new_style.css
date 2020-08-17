@@ -11,9 +11,12 @@ body{
     height: 100%;
     position: absolute;
     overflow: hidden;
-    background-color: rgb(100, 93, 93) ;
+    /* background-color: rgb(100, 93, 93) ; */
+    background-color: "white";
     width:80px;
     padding: 10px;
+    
+    border: 1px solid rgb(19, 82, 177);
 }
 
 .tool {
@@ -22,6 +25,8 @@ body{
     margin-top: 30px;
     margin-left: 10px;
     cursor: pointer;
+    padding: 5px;
+    border: 1px solid rgb(19, 82, 177);
 }
 .img {
     max-width:100%;
