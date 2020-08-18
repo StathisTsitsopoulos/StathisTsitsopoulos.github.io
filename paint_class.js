@@ -5,6 +5,7 @@ import Circle from './circle_class.js';
 import Triangle from './triangle_class.js';
 
 var angles = 0;
+var radius = 0;
 
 export default class Paint {
     //Xrwmata
@@ -167,9 +168,12 @@ export default class Paint {
                     this.ctx.stroke();
                     break;
                 case "circle":
+                    let tempRadius = radius;
+                    radius = Math.sqrt(Math.pow(e.touches[0].clientX - this.startingX,2)+Math.pow(e.touches[0].clientY - this.startingY,2));
+                    if (this.startingX - radius < 0  || this.startingY-radius<0 || this.startingY + radius > this.canvas.height || this.startingX+radius>this.canvas.width-100) {radius = tempRadius;break;}
                     this.ctx.putImageData(this.startingImage,0,0);
                     this.ctx.beginPath();
-                    this.ctx.arc(this.startingX,this.startingY,Math.sqrt(Math.pow(e.touches[0].clientX - this.startingX,2)+Math.pow(e.touches[0].clientY - this.startingY,2)),0,Math.PI*2,true);
+                    this.ctx.arc(this.startingX,this.startingY,radius,0,Math.PI*2,true);
                     this.ctx.stroke();
                     break;
                 case "triangle":
@@ -227,7 +231,7 @@ export default class Paint {
         }
 
         else if (this.selection == "circle") {
-            this.selectedCircle = new Circle({x: this.startingX,y: this.startingY},Math.sqrt(Math.pow(e.changedTouches[0].clientX - this.startingX,2)+Math.pow(e.changedTouches[0].clientY - this.startingY,2)));
+            this.selectedCircle = new Circle({x: this.startingX,y: this.startingY},radius);
             this.selectedCircle.strokeStyle = this.ctx.strokeStyle;
             this.selectedCircle.lineWidth = this.ctx.lineWidth;
             this.selectedCircle.popButton();

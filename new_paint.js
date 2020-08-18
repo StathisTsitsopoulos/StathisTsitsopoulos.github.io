@@ -30,6 +30,9 @@ var switcher = 1;
 var rotate_perimssion = 0;
 var resize_perimssion = 0;
 
+var popText = document.getElementById("test")
+var timeOut ;
+
 for (let item of layers) {
     item.init();
 }
@@ -48,6 +51,10 @@ document.querySelectorAll("[data-tool").forEach(                           //Too
         item.addEventListener("click",function (e) {
             closeButtons();
             selection =  item.getAttribute("data-tool");
+
+            clearTimeout(timeOut);
+            popText.innerHTML = selection;
+            timeOut = setTimeout(textHide,3000);
             if (selection == "circle") {
                 layersIndex = 4;
             }
@@ -74,9 +81,18 @@ document.querySelectorAll("[data-btn").forEach(                           //Btn 
         item.addEventListener("click",function (e) {
             console.log("in here with "+ item.getAttribute("data-btn"))
             closeButtons();
+            if (item.getAttribute("data-btn") == "undo" || item.getAttribute("data-btn") == "redo") {
+                clearTimeout(timeOut);
+                popText.innerHTML = item.getAttribute("data-btn");
+                timeOut = setTimeout(textHide,3000);
+            }
             switch(item.getAttribute("data-btn")) {
                 case "switch":
+                    clearTimeout(timeOut);
                     switcher = (switcher+1)%2;
+                    if (!switcher)  {popText.innerHTML = "Thickness"}
+                    else {popText.innerHTML = "Color-pick"}
+                    timeOut = setTimeout(textHide,3000);
                     break;
                 case "undo":
                     if (undoCanvasId.length == 0) {console.log("nothing to undo")}
@@ -106,21 +122,24 @@ document.querySelectorAll("[data-btn").forEach(                           //Btn 
                     textSwitch = 1;
                     break;
                 case "add":
-                    projects.push(new Project(paint.getImage(),layer2.getRects(),layer3.getLines(),layer4.getTriangles(),layer5.getCircles()));
-                    redoCanvasId.length = 0;
-                    undoCanvasId.length = 0;
-                    projectsCounter += 1;
-                    projectOptions.options[projectOptions.options.length] = new Option("Project "+projectsCounter,projectsCounter);
-                    console.log(" I am in here")
-                    projectOptions.value = projectsCounter;
-                    projectIndex = projectsCounter-1;
-                    //$("#projects").val(projectsIndex);
-                    layersIndex = 0;
-                    for (let item of layers) {
-                        item.init();
-                    }
+                    if(projectsCounter<4) {
+                        projects.push(new Project(paint.getImage(),layer2.getRects(),layer3.getLines(),layer4.getTriangles(),layer5.getCircles()));
+                        redoCanvasId.length = 0;
+                        undoCanvasId.length = 0;
+                        projectsCounter += 1;
+                        projectOptions.options[projectOptions.options.length] = new Option("Project "+projectsCounter,projectsCounter);
+                        console.log(" I am in here")
+                        projectOptions.value = projectsCounter;
+                        projectIndex = projectsCounter-1;
+                        //$("#projects").val(projectsIndex);
+                        layersIndex = 0;
+                        for (let item of layers) {
+                            item.init();
+                        }
 
-                    console.log(projects)
+                        console.log(projects)
+                    }
+                    else {alert("Maximum of 4 Projects allowed")}
                     break;
             }
         });
@@ -225,23 +244,29 @@ $("#projectName").on("click",()=> {
 
 
 $("#color-pick").on("input",()=>{                                           //Color event listener
+    clearTimeout(timeOut);
     if (switcher) {
+        popText.innerHTML = "Color-pick";
         for (let item of layers) {
             item.activeColor = $("#color-pick").val();
         }
     }
     else {
+        popText.innerHTML = "Thickness";
         for (let item of layers) {
             item.activeThickness = Math.floor($("#color-pick").val()/153);
         }
     }
+    timeOut = setTimeout(textHide,3000);
 });
 $("#color-pick").on("touchend",()=>{
     document.getElementById('slider-show').style.visibility = 'hidden';
 });
 
 
-
+function textHide () {
+    popText.innerHTML = "";
+}
 
 function start (e) {
     e.preventDefault();
