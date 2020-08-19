@@ -83,7 +83,7 @@
         <input type="button" data-btn = "resize-btn" class="resize-btn" id = "resize-btn">
         <input type="button" data-btn = "x-btn" class="x-btn" id = "x-btn">
         <input type="button" data-btn = "text-btn" class="text-btn" id = "text-btn">
-        <textarea id = "textarea" style="display: none; z-index: 2;"></textarea>
+        <textarea id = "textarea" style="display: none; font-size: 24px;"></textarea>
 
         
         <script src = "rect_class_test.js" type="module"></script>
@@ -96,10 +96,12 @@
     </body>
     <div class = "footer">
         
-        <input class = "box" data-btn = "switch" id = "switch" type = "submit" value = "">
+        <input class = "RGB-box" type="button" id ="RGB-box" value = " " >
         <input class = "slider"  type="range" id = "color-pick" title="color-pick" min = "0" max = "1530" value = "0">
-        <input class = "box" data-btn = "color-show" id = "color-show" type="button">
-        <input class = "RGB-box" type="button" id ="RGB-box" value = " " disabled= "disabled">
+        <input class = "thickness" type="button" id ="thickness" value = " ">
+        <!-- <input class = "box" data-btn = "switch" id = "switch" type = "submit" value = ""> -->
+        <!-- <input class = "box" data-btn = "color-show" id = "color-show" type="button"> -->
+        
         <div class = "slider-show" data-tool="slider-show" id = "slider-show" title="slider-show"></div>
         
     </div>

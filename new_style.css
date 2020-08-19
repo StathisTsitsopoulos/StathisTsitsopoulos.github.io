@@ -40,7 +40,7 @@ body{
     height: 200px;
     position: absolute;
     bottom: 1px;
-    left: 50px;
+    left: 100px;
 }
 
 .slider {
@@ -75,16 +75,12 @@ body{
 }
   
 
-input[type = "submit"] {
+/* input[type = "submit"] {
     background:url(/images/width.png) no-repeat;
     background-size: 50px 50px;
     background-position: center;
-}
-.box {
-    margin: 30px;
-    height: 60px;
-    width: 60px;
-}
+} */
+
 
 .slider-show {
     background-color: red;
@@ -179,11 +175,26 @@ input[type = "submit"] {
     -moz-box-shadow: 0 0 10px rgba(0, 0, 0, .9);   
     
 }
+.box {
+    margin: 30px;
+    height: 70px;
+    width: 80px;
+    bottom: 0px;
+}
 
 .RGB-box {
     margin: 30px;
-    height: 35px;
-    width: 150px;
-    font-size:medium;
+    height: 70px;
+    width: 180px;
+    font-size:large;
+    font-weight: bolder;
+}
 
+.thickness {
+    background:url(/images/width.png) no-repeat;
+    background-size: 50px 50px;
+    background-position: center;
+    margin: 30px;
+    height: 70px;
+    width: 100px;
 }

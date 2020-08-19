@@ -87,13 +87,6 @@ document.querySelectorAll("[data-btn").forEach(                           //Btn 
                 timeOut = setTimeout(textHide,3000);
             }
             switch(item.getAttribute("data-btn")) {
-                case "switch":
-                    clearTimeout(timeOut);
-                    switcher = (switcher+1)%2;
-                    if (!switcher)  {popText.innerHTML = "Thickness"}
-                    else {popText.innerHTML = "Color-pick"}
-                    timeOut = setTimeout(textHide,3000);
-                    break;
                 case "undo":
                     if (undoCanvasId.length == 0) {console.log("nothing to undo")}
                     else {
@@ -263,7 +256,28 @@ $("#color-pick").on("touchend",()=>{
     document.getElementById('slider-show').style.visibility = 'hidden';
 });
 
+// ====================== COLOR and THICKNESS ======================//
 
+$("#RGB-box").on("click",()=>{
+    switcher = 1;
+    $(".slider").css("background",layers[layersIndex].ctx.strokeStyle);
+    $("#RGB-box").css("background-color",layers[layersIndex].ctx.strokeStyle);
+    clearTimeout(timeOut);
+    popText.innerHTML = "Color-pick";
+    timeOut = setTimeout(textHide,3000);
+
+});
+
+$("#thickness").on("click",()=>{
+    switcher = 0;
+    clearTimeout(timeOut);
+    popText.innerHTML = "Thickness";
+    timeOut = setTimeout(textHide,3000);
+    $(".slider").css("background","grey");
+    $("#RGB-box").css("background-color","grey");
+    
+});
+//===============================================================//
 function textHide () {
     popText.innerHTML = "";
 }

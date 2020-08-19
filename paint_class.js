@@ -83,7 +83,7 @@ export default class Paint {
             $("#RGB-box").val("rgb(255,0,"+value+"" );
         }
         $("#slider-show").css("background-color",this.ctx.strokeStyle);
-        $("#color-show").css("background-color",this.ctx.strokeStyle);
+        $("#RGB-box").css("background-color",this.ctx.strokeStyle);
         $(".slider").css("background",this.ctx.strokeStyle);
 
 
@@ -106,6 +106,7 @@ export default class Paint {
         this.triangleObjects = [];
         this.circleObjects = [];
         
+        this.ctx.font = "30px Calibri"
         this.redoRectObjects = [];
         this.redoLineObjects = [];
         this.redoTriangleObjects = [];
@@ -203,7 +204,7 @@ export default class Paint {
                 this.selectedRect = new Rectangle(e.changedTouches[0].clientX,this.startingY, Math.abs(this.startingX-e.changedTouches[0].clientX),Math.abs(this.startingY-e.changedTouches[0].clientY));
             }
             else {this.selectedRect = new Rectangle(this.startingX,this.startingY, Math.abs(this.startingX-e.changedTouches[0].clientX),Math.abs(this.startingY-e.changedTouches[0].clientY))}
-            
+            this.selectedRect.font = this.ctx.font;
             this.selectedRect.lineWidth = this.ctx.lineWidth;
             this.selectedRect.strokeStyle = this.ctx.strokeStyle;
             
