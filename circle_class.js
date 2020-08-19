@@ -39,10 +39,15 @@ export default class Circle {
 
     checkCircle (point) {
 
-    let square_dist = (this.startingPoint.x- point.x) ** 2 + (this.startingPoint.y - point.y) ** 2
-    return square_dist <= this.radius **2
+        let square_dist = (this.startingPoint.x- point.x) ** 2 + (this.startingPoint.y - point.y) ** 2
+        return square_dist <= this.radius **2
 
+    }
 
+    checkDistance(point) {
+
+        let distance = Math.abs(Math.sqrt( Math.pow(point.x-this.startingPoint.x,2) + Math.pow(point.y - this.startingPoint.y,2)) - this.radius)
+        return distance;
     }
 
 

@@ -29,6 +29,8 @@ var textSwitch = 0;
 var switcher = 1;
 var rotate_perimssion = 0;
 var resize_perimssion = 0;
+var previousItem = document.getElementById("brush");
+
 
 var popText = document.getElementById("test")
 var timeOut ;
@@ -48,10 +50,13 @@ canvas.addEventListener('touchend', end);
 
 document.querySelectorAll("[data-tool").forEach(                           //Tool event listener
     item => {
-        item.addEventListener("click",function (e) {
-            closeButtons();
+        item.addEventListener("click",function () {
             selection =  item.getAttribute("data-tool");
-
+            
+            previousItem.classList.remove("active")
+            item.classList.add("active");
+            previousItem = item;
+            closeButtons();
             clearTimeout(timeOut);
             popText.innerHTML = selection;
             timeOut = setTimeout(textHide,3000);
@@ -64,14 +69,14 @@ document.querySelectorAll("[data-tool").forEach(                           //Too
             else if (selection == "line") {
                 layersIndex = 2;
             }
-            else if (selection == "rectangle"  || selection == "fill") {
+            else if (selection == "rectangle") {
                 layersIndex = 1;
             }
             else {
                 layersIndex = 0;
             }
-            
-           layers[layersIndex].activeSelection = selection;
+            if (selection == "fill") {$("#RGB-box").trigger("click");}
+            layers[layersIndex].activeSelection = selection;
         });
     }
 )
@@ -124,11 +129,14 @@ document.querySelectorAll("[data-btn").forEach(                           //Btn 
                         console.log(" I am in here")
                         projectOptions.value = projectsCounter;
                         projectIndex = projectsCounter-1;
-                        //$("#projects").val(projectsIndex);
                         layersIndex = 0;
                         for (let item of layers) {
                             item.init();
                         }
+                        previousItem.classList.remove("active");
+                        previousItem = document.getElementById("brush");
+                        previousItem.classList.add("active");
+                        selection = "brush";
 
                         console.log(projects)
                     }
@@ -163,6 +171,11 @@ $("#projects").on("change",function () {    //Change project
     projects[projectIndex] = new Project(paint.getImage(),layer2.getRects(),layer3.getLines(),layer4.getTriangles(),layer5.getCircles());
 
     projectIndex = $("#projects").val() - 1;
+
+    previousItem.classList.remove("active");
+    previousItem = document.getElementById("brush");
+    previousItem.classList.add("active");
+    selection = "brush";
     
     for (let item of layers) {
         item.init();

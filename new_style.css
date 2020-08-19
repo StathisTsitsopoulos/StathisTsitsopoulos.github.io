@@ -191,10 +191,15 @@ body{
 }
 
 .thickness {
-    background:url("images/width.png") no-repeat;
+    background:url(/images/width.png) no-repeat;
     background-size: 50px 50px;
     background-position: center;
     margin: 30px;
     height: 70px;
     width: 100px;
 }
+
+.active, .tool:hover {
+    background-color: #666;
+    color: white;
+  }

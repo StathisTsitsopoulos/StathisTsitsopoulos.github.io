@@ -274,12 +274,20 @@ export default class Paint {
     
 
     checkSelect(e,layer) {
+        let minDistance = 100000;
+        let minItem;
         if (layer == 1) {
             for (let item of this.rectObjects) {
                 if (item.checkRect(e.touches[0].clientX-100,e.touches[0].clientY) == true) {
-                    this.selectedRect = item;
-                    return {number:1,shape:item};
+                    if (item.checkDistance({x: e.touches[0].clientX-100,y: e.touches[0].clientY})< minDistance) {
+                        minItem = item;
+                        minDistance = item.checkDistance({x: e.touches[0].clientX-100,y: e.touches[0].clientY})
+                    } 
                 }
+            }
+            if (minDistance != 100000) {
+                this.selectedRect = minItem;
+                return {number:1,shape:this.selectedRect};
             }
         }
         else if (layer == 2) {
@@ -306,11 +314,16 @@ export default class Paint {
         else if (layer == 4) {
             for (let item of this.circleObjects) {
                 if (item.checkCircle({x: e.touches[0].clientX-100,y: e.touches[0].clientY})) {
-                    this.selectedCircle = item;
-                    
-                    return {number:4,shape:item};
-                    //this.selectedRect = item;
+                    if (item.checkDistance({x: e.touches[0].clientX-100,y: e.touches[0].clientY})< minDistance) {
+                        minItem = item;
+                        minDistance = item.checkDistance({x: e.touches[0].clientX-100,y: e.touches[0].clientY})
+                    } 
                 }
+            }
+            if (minDistance != 100000) {
+                this.selectedCircle = minItem;
+                        
+                return {number:4,shape:this.selectedCircle};
             }
 
 

@@ -1,4 +1,4 @@
-import {btnPop} from './helperFunctions.js';
+import {btnPop,distanceBetweenPoints} from './helperFunctions.js';
 
 export default class Rectangle {
 
@@ -67,6 +67,25 @@ export default class Rectangle {
             return true;
         }
     }
+
+    checkDistance (point) {  //Calculates the disances from the rectangle's corners and returns the smallest one
+        let min = 10000;
+        if (distanceBetweenPoints({x: this.leftCornerX,y: this.leftCornerY},{x: point.x, y: point.y}) < min) {
+            min = distanceBetweenPoints({x: this.leftCornerX,y: this.leftCornerY},{x: point.x, y: point.y});
+        }
+        if (distanceBetweenPoints({x: this.rightCornerX,y: this.rightCornerY},{x: point.x, y: point.y}) < min) {
+            min = distanceBetweenPoints({x: this.rightCornerX,y: this.rightCornerY},{x: point.x, y: point.y});
+        }
+        if (distanceBetweenPoints({x: this.botRightCornerX,y: this.botRightCornerY},{x: point.x, y: point.y}) < min) {
+            min = distanceBetweenPoints({x: this.botRightCornerX,y: this.botRightCornerY},{x: point.x, y: point.y});
+        }
+        if (distanceBetweenPoints({x: this.botLeftCornerX,y: this.botLeftCornerY},{x: point.x, y: point.y}) < min) {
+            min = distanceBetweenPoints({x: this.botLeftCornerX,y: this.botLeftCornerY},{x: point.x, y: point.y});
+        }
+        return (min);
+    }
+
+    
     
     //Test
     popButton () {
