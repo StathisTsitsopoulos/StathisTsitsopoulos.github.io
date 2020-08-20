@@ -85,8 +85,6 @@ export default class Paint {
         $("#slider-show").css("background-color",this.ctx.strokeStyle);
         $("#RGB-box").css("background-color",this.ctx.strokeStyle);
         $(".slider").css("background",this.ctx.strokeStyle);
-
-
         
     }
 
@@ -156,8 +154,6 @@ export default class Paint {
                     this.ctx.putImageData(this.startingImage,0,0);
                     this.ctx.beginPath();
                     this.ctx.rect(this.startingX, this.startingY,e.touches[0].clientX - this.startingX,e.touches[0].clientY - this.startingY);
-                    
-               
                     this.ctx.stroke();
                     $('#textarea').val('') //Test code
                     break;
@@ -304,10 +300,17 @@ export default class Paint {
         
             for (let item of this.triangleObjects) {
                 if (item.checkTriangle({x: e.touches[0].clientX-100,y: e.touches[0].clientY})) {
-                    this.selectedTriangle = item;
-                    
-                    return {number:3,shape:item};
+                    if (item.checkDistance({x: e.touches[0].clientX-100,y: e.touches[0].clientY})< minDistance) {
+                        minItem = item;
+                        minDistance = item.checkDistance({x: e.touches[0].clientX-100,y: e.touches[0].clientY})
+                    } 
                 }
+                
+            }
+            if (minDistance != 100000) {
+                this.selectedTriangle = minItem;
+                
+                return {number: minDistance, shape: this.selectedTriangle};
             }
             
         }

@@ -65,17 +65,28 @@ export function lineDistance(p1, p2) {
 export function checkDistance(e,layers) {
     var rep = 0;
     var contain = [0,0,0,0,0]
+    var min = 5000;
+    var index = 0;
+
     for (let layer of layers ) {
         contain[rep]= layer.checkSelect(e,rep)
         rep += 1;
     }
+    rep = 0;
+    console.log(contain)
     for (let struct of contain) {
-        if (struct.number >0) {
-            struct.shape.popButton();
-            return struct.number;
+
+        if (struct.number < 5000) {
+            min = struct.number;
+            index = rep;
         }
+        rep += 1;
     }
-    return 0 ;
+    if (min != 5000) {
+        contain[index].shape.popButton();
+        return index;
+    }
+    else { return 0 ;}
 }
 
 export function distanceBetweenPoints(point1,point2) {

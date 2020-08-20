@@ -1,4 +1,4 @@
-import {btnPop} from './helperFunctions.js';
+import {btnPop,distanceBetweenPoints} from './helperFunctions.js';
 
 export default class Triangle {
 
@@ -56,6 +56,21 @@ export default class Triangle {
         if((point3.x-point2.x)*(point.y-point2.y)-(point3.y-point2.y)*(point.x-point2.x) > 0 != s_ab) return false;
 
         return true;
+    }
+
+    checkDistance (point) {  //Calculates the disances from the rectangle's corners and returns the smallest one
+        let min = 10000;
+        if (distanceBetweenPoints({x: this.point1.x,y: this.point1.y},{x: point.x, y: point.y}) < min) {
+            min = distanceBetweenPoints({x: this.point1.x,y: this.point1.y},{x: point.x, y: point.y});
+        }
+        if (distanceBetweenPoints({x: this.point2.x,y: this.point2.y},{x: point.x, y: point.y}) < min) {
+            min = distanceBetweenPoints({x: this.point2.x,y: this.point2.y},{x: point.x, y: point.y});
+        }
+        if (distanceBetweenPoints({x: this.point3.x,y: this.point3.y},{x: point.x, y: point.y}) < min) {
+            min = distanceBetweenPoints({x: this.point3.x,y: this.point3.y},{x: point.x, y: point.y});
+        }
+
+        return (min);
     }
 }
 

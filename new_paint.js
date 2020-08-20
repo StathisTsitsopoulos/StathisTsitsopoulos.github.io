@@ -46,7 +46,7 @@ for (let item of layers) {
 canvas.addEventListener('touchstart',start);
 canvas.addEventListener('touchmove',draw);
 canvas.addEventListener('touchend', end);
-
+//document.addEventListener('touchmove',draw)
 
 document.querySelectorAll("[data-tool").forEach(                           //Tool event listener
     item => {
@@ -215,9 +215,9 @@ $("#rotate-btn").on("touchstart",(e)=>{      //Rotate+
     rotate_perimssion = 1;
     layers[layersIndex].activeSelection = "rotate";
     selection = "rotate"
-    start(e);
+    
     closeButtons();
-  
+    start(e);
 });
 
 $("#rotate-btn").on("touchmove",(e)=>{
@@ -227,22 +227,28 @@ $("#rotate-btn").on("touchmove",(e)=>{
 
 $("#rotate-btn").on("touchend",(e)=>{
     rotate_perimssion = 0;
+    
     end(e);
 });
 
-$("#resize-btn").on("mousedown",(e)=>{      //Resize test
+$("#resize-btn").on("touchstart",(e)=>{      //Resize test
     selection = "resize"
 
     resize_perimssion = 1;
     layers[layersIndex].activeSelection = "resize";
-    
     closeButtons();
-  
+    start(e);
 });
 
-$("#resize-btn").on("touchend",()=>{
-    resize_perimssion = 0;
+$("#resize-btn").on("touchmove",(e)=>{
+    draw(e);
 });
+
+$("#resize-btn").on("touchend",(e)=>{
+    resize_perimssion = 0;
+    end(e);
+});
+
 //=============================ROTATE AND RESIZE END==================
 
 $("#projectName").on("click",()=> {
@@ -303,7 +309,6 @@ function textHide () {
 
 function start (e) {
     e.preventDefault();
-    $("#RGB-box").css("background-color","green");
     if (textSwitch != 1) {
 
   
@@ -328,7 +333,6 @@ function start (e) {
 }
 
 function draw (e) {
-    
     e.preventDefault();
     if (rotate_perimssion == 1) {layers[layersIndex].rotate(e);}
     else if (resize_perimssion == 1) {layers[layersIndex].resize(e,layersIndex);}
@@ -338,6 +342,8 @@ function draw (e) {
 
 function end (e) {
     e.preventDefault();
+    
+
     if(textSwitch != 1) {
         rotate_perimssion = 0;
         resize_perimssion = 0;
