@@ -210,18 +210,24 @@ $("#projects").on("change",function () {    //Change project
 //======================CHANGING PROJECT====================
 
 //==========================ROTATE AND RESIZE=========================
-$("#rotate-btn").on("mousedown",(e)=>{      //Rotate+
+$("#rotate-btn").on("touchstart",(e)=>{      //Rotate+
     e.preventDefault();
     rotate_perimssion = 1;
-    
     layers[layersIndex].activeSelection = "rotate";
     selection = "rotate"
+    start(e);
     closeButtons();
   
 });
 
+$("#rotate-btn").on("touchmove",(e)=>{
+    draw(e);
+});
+
+
 $("#rotate-btn").on("touchend",(e)=>{
     rotate_perimssion = 0;
+    end(e);
 });
 
 $("#resize-btn").on("mousedown",(e)=>{      //Resize test
@@ -297,7 +303,7 @@ function textHide () {
 
 function start (e) {
     e.preventDefault();
-
+    $("#RGB-box").css("background-color","green");
     if (textSwitch != 1) {
 
   

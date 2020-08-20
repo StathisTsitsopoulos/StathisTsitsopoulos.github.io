@@ -110,7 +110,7 @@ export default class Rectangle {
         ctx.beginPath();
         ctx.font = this.font
         ctx.rect(-this.width/2, -this.height/2,this.width,this.height);
-        if(this.fillPermission) {ctx.fillStyle = this.fillStyles; ctx.fill(); }
+        if(this.fillPermission) {ctx.fillStyle = this.fillStyles; ctx.fill();  ctx.strokeStyle = this.fillStyles}
         
        
         ctx.stroke();
