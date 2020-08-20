@@ -12,7 +12,7 @@ body{
     position: absolute;
     /* background-color: rgb(100, 93, 93) ; */
     background-color: "white";
-    width:80px;
+    width:7%;
     padding: 10px;
     top: 0px;
     overflow:auto;
@@ -40,7 +40,7 @@ body{
     height: 200px;
     position: absolute;
     bottom: 1px;
-    left: 100px;
+    left: 7%;
 }
 
 .slider {
