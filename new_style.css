@@ -206,4 +206,35 @@ body{
 .active, .tool:hover {
     background-color: #666;
     color: white;
-  }
+}
+
+.slider2 {
+    -webkit-appearance: none;
+    width: 45%;
+    height: 35px;
+    background:  rgb(151, 145, 145);
+    outline: none;
+    overflow: hidden;
+    border-radius: 15px;
+    box-shadow: inset 0 0 5px rgba(0, 0, 0, 1);
+}
+
+
+.slider2::-moz-range-thumb {
+    width: 30px; 
+    height: 40px; 
+    opacity: 1.2;
+    background: #060706; 
+    cursor: pointer; 
+    border-radius: 50%;
+}
+
+  .slider2::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 30px; 
+    height: 40px; 
+    background: #060706; 
+    cursor: pointer; 
+    border-radius: 50%;
+}

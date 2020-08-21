@@ -262,23 +262,23 @@ $("#projectName").on("click",()=> {
 });
 
 
-$("#color-pick").on("input",()=>{                                           //Color event listener
+$("#colorPick").on("input",()=>{                                           //Color event listener
     clearTimeout(timeOut);
     if (switcher) {
-        popText.innerHTML = "Color-pick";
+        popText.innerHTML = "colorPick";
         for (let item of layers) {
-            item.activeColor = $("#color-pick").val();
+            item.activeColor = $("#colorPick").val();
         }
     }
     else {
         popText.innerHTML = "Thickness";
         for (let item of layers) {
-            item.activeThickness = Math.floor($("#color-pick").val()/153);
+            item.activeThickness = Math.floor($("#colorPick").val()/153);
         }
     }
     timeOut = setTimeout(textHide,3000);
 });
-$("#color-pick").on("touchend",()=>{
+$("#colorPick").on("touchend",()=>{
     document.getElementById('slider-show').style.visibility = 'hidden';
 });
 
@@ -286,11 +286,14 @@ $("#color-pick").on("touchend",()=>{
 
 $("#RGB-box").on("click",()=>{
     switcher = 1;
-    $(".slider").css("background",layers[layersIndex].ctx.strokeStyle);
+    
     $("#RGB-box").css("background-color",layers[layersIndex].ctx.strokeStyle);
     clearTimeout(timeOut);
-    popText.innerHTML = "Color-pick";
+    popText.innerHTML = "colorPick";
     timeOut = setTimeout(textHide,3000);
+    document.getElementById("colorPick").classList.remove("slider2");
+    document.getElementById("colorPick").classList.add("slider");
+    $(".slider").css("background",layers[layersIndex].ctx.strokeStyle);
 
 });
 
@@ -301,6 +304,8 @@ $("#thickness").on("click",()=>{
     timeOut = setTimeout(textHide,3000);
     $(".slider").css("background","grey");
     $("#RGB-box").css("background-color","grey");
+    document.getElementById("colorPick").classList.remove("slider");
+    document.getElementById("colorPick").classList.add("slider2");
     
 });
 //===============================================================//
