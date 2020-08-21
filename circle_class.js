@@ -34,7 +34,8 @@ export default class Circle {
 
     popButton() {
         btnPop($("#resize-btn"),this.startingPoint.x+100,this.startingPoint.y);
-        
+        btnPop($("#x-btn"),this.startingPoint.x+100+this.radius,this.startingPoint.y);
+
     }
 
     checkCircle (point) {

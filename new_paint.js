@@ -113,7 +113,7 @@ document.querySelectorAll("[data-btn").forEach(                           //Btn 
                     }
                     break;
                 case "x-btn":
-                    layers[layersIndex].closeShape();
+                    layers[layersIndex].closeShape(layersIndex);
                     break;
                 case "text-btn":
                     layers[layersIndex].putText(e);
@@ -133,6 +133,7 @@ document.querySelectorAll("[data-btn").forEach(                           //Btn 
                         for (let item of layers) {
                             item.init();
                         }
+                        document.querySelector('#add').style.background = "none";
                         previousItem.classList.remove("active");
                         previousItem = document.getElementById("brush");
                         previousItem.classList.add("active");

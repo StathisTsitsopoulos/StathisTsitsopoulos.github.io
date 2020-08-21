@@ -73,10 +73,11 @@ export function checkDistance(e,layers) {
         rep += 1;
     }
     rep = 0;
+    
     console.log(contain)
     for (let struct of contain) {
-
-        if (struct.number < 5000) {
+        
+        if (struct.number < min) { 
             min = struct.number;
             index = rep;
         }

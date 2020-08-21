@@ -283,7 +283,7 @@ export default class Paint {
             }
             if (minDistance != 100000) {
                 this.selectedRect = minItem;
-                return {number:1,shape:this.selectedRect};
+                return {number:minDistance,shape:this.selectedRect};
             }
         }
         else if (layer == 2) {
@@ -292,7 +292,7 @@ export default class Paint {
                 if (item.checkLine({x: e.touches[0].clientX-100,y: e.touches[0].clientY}) < 5) {
                     this.selectedLine = item;
                     
-                    return {number:2,shape:item};
+                    return {number:minDistance,shape:item};
                 }
             }
         }
@@ -516,30 +516,59 @@ export default class Paint {
         }
     }
     
-    closeShape () {
+    closeShape (layer) {
         console.log("Closing Shape");
         closeButtons();
         let temp 
-        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        if (layer == 1) {
+            this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
-        for (let item of this.rectObjects) {
-            
-            if (item != this.selectedRect) {
-                if (item!= this.selectedRect ) {
+            for (let item of this.rectObjects) {
+                
+                if (item != this.selectedRect) {
 
-                   item.restore(this.ctx);       
+                    item.restore(this.ctx);       
+                }
+                else {
+                    temp = item;
                 }
             }
-            else {
-                temp = item;
-            }
+            this.rectObjects.splice(this.rectObjects.indexOf(temp),1);
+            this.redoRectObjects.splice(this.redoRectObjects.indexOf(temp),1);
+            this.undoArray.splice(this.undoArray.indexOf(temp),1);
+            this.redoArray.splice(this.redoArray.indexOf(temp),1);
         }
+        else if (layer == 3) {
+            this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+            for (let item of this.triangleObjects) {
+                if (item != this.selectedTriangle) {
+                    item.restore(this.ctx);
+                }
+                else {
+                    temp = item;
+                }
+            }
+            this.triangleObjects.splice(this.triangleObjects.indexOf(temp),1);
+            this.redoTriangleObjects.splice(this.redoTriangleObjects.indexOf(temp),1);
+            this.undoArray.splice(this.undoArray.indexOf(temp),1);
+            this.redoArray.splice(this.redoArray.indexOf(temp),1);
+        }
+        else if (layer == 4) {
+            this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
-        this.rectObjects.splice(this.rectObjects.indexOf(temp),1);
-        this.redoRectObjects.splice(this.redoRectObjects.indexOf(temp),1);
-        this.undoArray.splice(this.undoArray.indexOf(temp),1);
-        this.redoArray.splice(this.redoArray.indexOf(temp),1);
-        console.log(this.rectObjects.length+"REctobjects length")
+            for (let item of this.circleObjects) {
+                if (item != this.selectedCircle) {
+                    item.restore(this.ctx);
+                }
+                else {
+                    temp = item;
+                }
+            }
+            this.circleObjects.splice(this.circleObjects.indexOf(temp),1);
+            this.redoCircleObjects.splice(this.redoCircleObjects.indexOf(temp),1);
+            this.undoArray.splice(this.undoArray.indexOf(temp),1);
+            this.redoArray.splice(this.redoArray.indexOf(temp),1);
+        }
         
 
     }

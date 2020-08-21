@@ -37,6 +37,7 @@ export default class Triangle {
 
     popButton() {
         btnPop($("#resize-btn"),this.point2.x+100,this.point2.y);
+        btnPop($("#x-btn"),this.point1.x+100,this.point1.y);
         
     }
 
@@ -58,7 +59,7 @@ export default class Triangle {
         return true;
     }
 
-    checkDistance (point) {  //Calculates the disances from the rectangle's corners and returns the smallest one
+    checkDistance (point) {  //Calculates the disances of an inner point mfrom the triangles's corners and returns the smallest one
         let min = 10000;
         if (distanceBetweenPoints({x: this.point1.x,y: this.point1.y},{x: point.x, y: point.y}) < min) {
             min = distanceBetweenPoints({x: this.point1.x,y: this.point1.y},{x: point.x, y: point.y});
