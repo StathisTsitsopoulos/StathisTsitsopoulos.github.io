@@ -326,7 +326,7 @@ export default class Paint {
             if (minDistance != 100000) {
                 this.selectedCircle = minItem;
                         
-                return {number:4,shape:this.selectedCircle};
+                return {number: minDistance,shape:this.selectedCircle};
             }
 
 
