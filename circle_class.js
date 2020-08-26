@@ -33,22 +33,26 @@ export default class Circle {
     }
 
     popButton() {
-        btnPop($("#resize-btn"),this.startingPoint.x+100,this.startingPoint.y);
+        btnPop($("#resize-btn"),this.startingPoint.x+100-this.radius,this.startingPoint.y);
         btnPop($("#x-btn"),this.startingPoint.x+100+this.radius,this.startingPoint.y);
-
+        btnPop($("#drag-btn"),this.startingPoint.x+100,this.startingPoint.y)
     }
 
     checkCircle (point) {
 
         let square_dist = (this.startingPoint.x- point.x) ** 2 + (this.startingPoint.y - point.y) ** 2
         return square_dist <= this.radius **2
-
     }
 
     checkDistance(point) {
 
-        let distance = Math.abs(Math.sqrt( Math.pow(point.x-this.startingPoint.x,2) + Math.pow(point.y - this.startingPoint.y,2)) - this.radius)
+        let distance = Math.abs(Math.sqrt( Math.pow(point.x-this.startingPoint.x,2) + Math.pow(point.y - this.startingPoint.y,2)) - this.radius);
         return distance;
+    }
+
+    move(dx,dy) {
+        this.startingPoint.x +=  dx;
+        this.startingPoint.y += dy;
     }
 
 

@@ -227,6 +227,7 @@ export default class Paint {
             this.selectedTriangle = new Triangle({x: this.startingX,y: this.startingY},{x: e.changedTouches[0].clientX-100, y: this.startingY},{x: e.changedTouches[0].clientX-100,y:e.changedTouches[0].clientY});
             this.selectedTriangle.lineWidth = this.ctx.lineWidth;
             this.selectedTriangle.strokeStyle = this.ctx.strokeStyle;
+            this.selectedTriangle.setCenter();
             this.selectedTriangle.popButton();
             this.triangleObjects.push(this.selectedTriangle);
             console.log("Ending triangle");
@@ -254,6 +255,7 @@ export default class Paint {
                 this.selection = "line";
             }
             else if (this.triangleObjects.length>0) {
+                this.selectedTriangle.setCenter();
                 this.selectedTriangle.popButton();
                 this.selection = "triangle";
             }
@@ -271,8 +273,22 @@ export default class Paint {
             this.selectedRect.restore(this.ctx);
         }
         else if (this.selection == "drag") {
-            this.selectedRect.popButton();
-            this.selectedRect.restore(this.ctx);
+            if (this.rectObjects.length>0) {
+                this.selectedRect.popButton();
+                this.selectedRect.restore(this.ctx);
+                this.selection = "rectangle";
+            }
+            else if (this.triangleObjects.length>0) {
+                this.selectedTriangle.setCenter();
+                this.selectedTriangle.popButton();
+                this.selectedTriangle.restore(this.ctx);
+                this.selection = "triangle";
+            }
+            else if (this.circleObjects.length>0) {
+                this.selectedCircle.popButton();
+                this.selectedCircle.restore(this.ctx);
+                this.selection = "circle";
+            }
         }
       
         
@@ -629,9 +645,24 @@ export default class Paint {
             console.log(this.selectedRect.leftCornerX, this.selectedRect.leftCornerY)
             this.selectedRect.move(-dx,-dy)
             this.selectedRect.restore(this.ctx);
-            // this.ctx.beginPath();
-            // this.ctx.rect(this.selectedRect.leftCornerX, this.selectedRect.leftCornerY,this.selectedRect.width,this.selectedRect.height);
-            // this.ctx.stroke();
+        }
+        else if (layer == 3) {
+            for (let item of this.triangleObjects) {
+                if (item != this.selectedTriangle) {
+                    item.restore(this.ctx);
+                }
+            }
+            this.selectedTriangle.move(-dx,-dy)
+            this.selectedTriangle.restore(this.ctx)
+        }
+        else if (layer == 4) {
+            for (let item of this.circleObjects) {
+                if (item != this.selectedCircle) {
+                    item.restore(this.ctx);
+                }
+            }
+            this.selectedCircle.move(-dx,-dy)
+            this.selectedCircle.restore(this.ctx)
         }
 
 

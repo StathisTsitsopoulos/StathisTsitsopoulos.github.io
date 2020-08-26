@@ -10,6 +10,11 @@ export default class Triangle {
         this.strokeStyle = 0;
         this.lineWidth = 0;
         this.fillPermission = 0;
+        this.center = {x:0,y:0};
+        this.base = distanceBetweenPoints(point2,point3);
+        this.height = distanceBetweenPoints(point1,point2);
+        console.log("Base is ",this.base," and height is ",this.height)
+        this.angle = 0;
     }
 
 
@@ -38,6 +43,8 @@ export default class Triangle {
     popButton() {
         btnPop($("#resize-btn"),this.point2.x+100,this.point2.y);
         btnPop($("#x-btn"),this.point1.x+100,this.point1.y);
+        // btnPop($("#rotate-btn"),this.point3.x+100,this.point3.y);
+        btnPop($("#drag-btn"),this.center.x+100,this.center.y)
         
     }
 
@@ -59,20 +66,40 @@ export default class Triangle {
         return true;
     }
 
-    checkDistance (point) {  //Calculates the disances of an inner point mfrom the triangles's corners and returns the smallest one
-        let min = 10000;
-        if (distanceBetweenPoints({x: this.point1.x,y: this.point1.y},{x: point.x, y: point.y}) < min) {
-            min = distanceBetweenPoints({x: this.point1.x,y: this.point1.y},{x: point.x, y: point.y});
-        }
-        if (distanceBetweenPoints({x: this.point2.x,y: this.point2.y},{x: point.x, y: point.y}) < min) {
-            min = distanceBetweenPoints({x: this.point2.x,y: this.point2.y},{x: point.x, y: point.y});
-        }
-        if (distanceBetweenPoints({x: this.point3.x,y: this.point3.y},{x: point.x, y: point.y}) < min) {
-            min = distanceBetweenPoints({x: this.point3.x,y: this.point3.y},{x: point.x, y: point.y});
-        }
-
-        return (min);
+    checkDistance (point) {  //Calculates the disances from the rectangle's corners and returns the smallest one
+    let min = 10000;
+    if (distanceBetweenPoints({x: this.point1.x,y: this.point1.y},{x: point.x, y: point.y}) < min) {
+        min = distanceBetweenPoints({x: this.point1.x,y: this.point1.y},{x: point.x, y: point.y});
     }
+    if (distanceBetweenPoints({x: this.point2.x,y: this.point2.y},{x: point.x, y: point.y}) < min) {
+        min = distanceBetweenPoints({x: this.point2.x,y: this.point2.y},{x: point.x, y: point.y});
+    }
+    if (distanceBetweenPoints({x: this.point3.x,y: this.point3.y},{x: point.x, y: point.y}) < min) {
+        min = distanceBetweenPoints({x: this.point3.x,y: this.point3.y},{x: point.x, y: point.y});
+    }
+    console.log("min distance is ",min)
+    return (min);
+
+
+    }
+
+    setCenter() {
+        this.center.x = (this.point1.x+this.point2.x+this.point3.x)/3;
+        this.center.y =  (this.point1.y+this.point2.y+this.point3.y)/3;
+    }
+
+    move(dx,dy) {
+        this.point1.x +=  dx;
+        this.point1.y += dy;
+        this.point2.x += dx;
+        this.point2.y += dy;
+        this.point3.x += dx;
+        this.point3.y += dy;
+       
+        this.center.x = (this.point1.x+this.point2.x+this.point3.x)/3;
+        this.center.y =  (this.point1.y+this.point2.y+this.point3.y)/3;
+    }
+
 }
 
 
