@@ -6,6 +6,8 @@ import Triangle from './triangle_class.js';
 
 var angles = 0;
 var radius = 0;
+var curr = {x:0,y:0}
+
 
 export default class Paint {
     //Xrwmata
@@ -129,6 +131,10 @@ export default class Paint {
         }
         this.startingX = e.touches[0].clientX-100;
         this.startingY = e.touches[0].clientY;
+        if (this.selection == "drag" || this.selection == "resize") {
+            curr.x = this.startingX
+            curr.y = this.startingY
+        }
     }
 
     drawShape (e) {
@@ -215,7 +221,6 @@ export default class Paint {
             this.selectedLine.lineWidth = this.ctx.lineWidth;
             this.selectedLine.popButton();
             this.lineObjects.push(this.selectedLine);
-            console.log("Ending Rect");
             
         }
         else if (this.selection == "triangle") {
@@ -239,6 +244,7 @@ export default class Paint {
         else if (this.selection == "resize") {
             if (this.rectObjects.length>0) {
                 this.selectedRect.cornersAfterResize();
+                this.selectedRect.angle = 0;
                 this.ctx.fillText(this.selectedRect.text, this.selectedRect.startingX+this.selectedRect.width/2,  this.selectedRect.startingY+this.selectedRect.height/2);
                 this.selectedRect.popButton();
                 this.selection = "rectangle";
@@ -259,7 +265,15 @@ export default class Paint {
         
         else if (this.selection == "eraser") { this.ctx.strokeStyle = this.restoreColor;}
         else if (this.selection == "rotate") {//this.selectedRect.restore(this.ctx); 
-            this.selectedRect.popButton();this.selection = "rectangle";this.selectedRect.restore(this.ctx);}
+            this.selectedRect.cornersAfterRotate = angles;
+            this.selectedRect.popButton();
+            this.selection = "rectangle";
+            this.selectedRect.restore(this.ctx);
+        }
+        else if (this.selection == "drag") {
+            this.selectedRect.popButton();
+            this.selectedRect.restore(this.ctx);
+        }
       
         
 
@@ -594,11 +608,34 @@ export default class Paint {
             this.ctx.rect(-this.selectedRect.width/2, -this.selectedRect.height/2,this.selectedRect.width,this.selectedRect.height);
             this.ctx.stroke();
             this.ctx.fillText(this.selectedRect.text, 0, 0);
-            this.selectedRect.cornersAfterRotate = angles;
+            
         this.ctx.restore();
     }
 
+    drag(e,layer) {
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        
+        var dx = curr.x - (e.touches[0].clientX-100)
+        var dy = curr.y - e.touches[0].clientY
+        console.log("dx is ",dx,"dy is ",dy)
+        curr.x = e.touches[0].clientX-100
+        curr.y = e.touches[0].clientY
+        if (layer == 1) {
+            for (let item of this.rectObjects) {
+                if (item != this.selectedRect) {
+                    item.restore(this.ctx);
+                }
+            }
+            console.log(this.selectedRect.leftCornerX, this.selectedRect.leftCornerY)
+            this.selectedRect.move(-dx,-dy)
+            this.selectedRect.restore(this.ctx);
+            // this.ctx.beginPath();
+            // this.ctx.rect(this.selectedRect.leftCornerX, this.selectedRect.leftCornerY,this.selectedRect.width,this.selectedRect.height);
+            // this.ctx.stroke();
+        }
 
+
+    }
 
     resize (e,layer) {
         console.log("resizing")

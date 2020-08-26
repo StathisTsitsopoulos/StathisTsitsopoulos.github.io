@@ -24,6 +24,7 @@ export function closeButtons () {
     $("#text-btn").css("display","none");
     $("#textarea").css("display","none");
     $("#resize-btn").css("display", "none");
+    $("#drag-btn").css("display", "none");
 }
 
 //PREVIOUS CHANGE PROJECT METHOD

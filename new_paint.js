@@ -29,6 +29,7 @@ var textSwitch = 0;
 var switcher = 1;
 var rotate_perimssion = 0;
 var resize_perimssion = 0;
+var drag_perimssion = 0;
 var previousItem = document.getElementById("brush");
 
 
@@ -117,6 +118,7 @@ document.querySelectorAll("[data-btn").forEach(                           //Btn 
                     break;
                 case "text-btn":
                     layers[layersIndex].putText(e);
+                    $('#textarea').focus();
                     textSwitch = 1;
                     break;
                 case "add":
@@ -210,7 +212,7 @@ $("#projects").on("change",function () {    //Change project
 })
 //======================CHANGING PROJECT====================
 
-//==========================ROTATE AND RESIZE=========================
+//==========================ROTATE AND RESIZE AND DRAG=========================
 $("#rotate-btn").on("touchstart",(e)=>{      //Rotate+
     e.preventDefault();
     rotate_perimssion = 1;
@@ -228,6 +230,27 @@ $("#rotate-btn").on("touchmove",(e)=>{
 
 $("#rotate-btn").on("touchend",(e)=>{
     rotate_perimssion = 0;
+    
+    end(e);
+});
+
+$("#drag-btn").on("touchstart",(e)=>{      //DRAG
+    e.preventDefault();
+    drag_perimssion = 1;
+    layers[layersIndex].activeSelection = "drag";
+    selection = "drag"
+    
+    closeButtons();
+    start(e);
+});
+
+$("#drag-btn").on("touchmove",(e)=>{
+    draw(e);
+});
+
+
+$("#drag-btn").on("touchend",(e)=>{
+    drag_perimssion = 0;
     
     end(e);
 });
@@ -250,7 +273,7 @@ $("#resize-btn").on("touchend",(e)=>{
     end(e);
 });
 
-//=============================ROTATE AND RESIZE END==================
+//=============================ROTATE AND RESIZE AND DRAG END==================
 
 $("#projectName").on("click",()=> {
     let txt =  prompt("Please enter your project name: ");
@@ -342,6 +365,7 @@ function draw (e) {
     e.preventDefault();
     if (rotate_perimssion == 1) {layers[layersIndex].rotate(e);}
     else if (resize_perimssion == 1) {layers[layersIndex].resize(e,layersIndex);}
+    else if (drag_perimssion == 1) {layers[layersIndex].drag(e,layersIndex);}
     else {layers[layersIndex].drawShape(e);}
 
 }
@@ -353,6 +377,7 @@ function end (e) {
     if(textSwitch != 1) {
         rotate_perimssion = 0;
         resize_perimssion = 0;
+        drag_perimssion == 0;
         layers[layersIndex].end(e);
     }
     else {

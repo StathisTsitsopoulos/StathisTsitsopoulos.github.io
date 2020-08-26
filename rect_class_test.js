@@ -24,7 +24,6 @@ export default class Rectangle {
         this.text = "";
         this.font = 0;
         this.fillPermission = 0;
-        
     }
 
     set fillStyle(fillStyle) {
@@ -48,9 +47,15 @@ export default class Rectangle {
     }
 
     cornersAfterResize() {
+        this.leftCornerX = this.startingX;
+        this.leftCornerY = this.startingY;
+
+
         this.rightCornerX = this.startingX + this.width;
+        this.rightCornerY = this.startingY;
 
         this.botLeftCornerY = this.startingY + this.height;
+        this.botLeftCornerX = this.startingX;
 
         this.botRightCornerX = this.startingX + this.width;
         this.botRightCornerY = this.startingY + this.height;
@@ -86,13 +91,13 @@ export default class Rectangle {
     }
 
     
-    
     //Test
     popButton () {
         btnPop($("#rotate-btn"),this.leftCornerX+100,this.leftCornerY);
         btnPop($("#x-btn"),this.rightCornerX+100,this.rightCornerY);
         btnPop($("#text-btn"),this.botLeftCornerX+100,this.botLeftCornerY);
         btnPop($("#resize-btn"),this.botRightCornerX+100,this.botRightCornerY);
+        btnPop($("#drag-btn"),this.centerX+100,this.centerY);
     }
 
     restore (ctx) {
@@ -110,7 +115,7 @@ export default class Rectangle {
         ctx.beginPath();
         ctx.font = this.font
         ctx.rect(-this.width/2, -this.height/2,this.width,this.height);
-        if(this.fillPermission) {ctx.fillStyle = this.fillStyles; ctx.fill();  ctx.strokeStyle = this.fillStyles}
+        if(this.fillPermission) {ctx.fillStyle = this.fillStyles; ctx.fill(); ctx.strokeStyle = this.fillStyles;}
         
        
         ctx.stroke();
@@ -124,8 +129,24 @@ export default class Rectangle {
         ctx.font = this.font
         ctx.fillText(this.text, 0, 0);
         ctx.restore();
+        console.log("redaw and angles ",this.angle*180/Math.PI);
+    }
 
-        console.log("redraw");
+    move(dx,dy) {
+        this.leftCornerX +=  dx;
+        this.leftCornerY += dy;
+        this.rightCornerX += dx;
+        this.rightCornerY += dy;
+        this.botLeftCornerX += dx;
+        this.botLeftCornerY += dy;
+        this.botRightCornerX += dx;
+        this.botRightCornerY += dy;
+        this.startingX += dx;
+        this.startingY += dy;
+        this.centerX = this.startingX + this.width/2;
+        this.centerY = this.startingY + this.height / 2;
+
+
     }
 
 

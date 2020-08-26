@@ -175,6 +175,27 @@ body{
     -moz-box-shadow: 0 0 10px rgba(0, 0, 0, .9);   
     
 }
+
+.drag-btn {
+    width: 40px;
+    height: 40px;
+    text-align: center;
+    padding: 6px 0;
+    font-size: 12px;
+    line-height: 1.428571429;
+    border-radius: 15px;
+    display: none;
+    position: absolute;
+
+    background-image:url("images/drag.png");
+    background-size: contain;
+    background-repeat: no-repeat;
+    overflow: hidden;
+    box-shadow: 0 0 10px rgba(0, 0, 0, .9);
+    -webkit-box-shadow: 0 0 10px rgba(0, 0, 0, .9);
+    -moz-box-shadow: 0 0 10px rgba(0, 0, 0, .9);   
+
+}
 .box {
     margin: 30px;
     height: 70px;
